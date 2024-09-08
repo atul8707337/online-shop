@@ -1,0 +1,97 @@
+09.08 08:38
+clint/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .product {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .product img {
+            max-width: 100%;
+            height: auto;
+        }
+        .product h3 {
+            margin: 0;
+        }
+        .product p {
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Product Catalog</h1>
+    </div>
+    <div class="container" id="productContainer">
+        <!-- Products will be inserted here by JavaScript -->
+    </div>
+
+    <script>
+        // Replace this with your actual backend endpoint
+        const apiEndpoint = 'https://ca29bb14-499b-4595-a0e9-d068d486a4a1-00-1q9yshovohb9e.sisko.replit.dev/api/products';  // Your API endpoint
+        
+        async function fetchProducts() {
+            try {
+                const response = await fetch(apiEndpoint);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const products = await response.json();
+                displayProducts(products);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        }
+
+        function displayProducts(products) {
+            const productContainer = document.getElementById('productContainer');
+            productContainer.innerHTML = ''; // Clear previous content
+
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product');
+
+                const productPrice = product.discount ? 
+                    `<p><s>$${product.price}</s> <strong>$${(product.price - (product.price * product.discount / 100)).toFixed(2)}</strong></p>` :
+                    `<p><strong>$${product.price}</strong></p>`;
+
+                productDiv.innerHTML = `
+                    <h3>${product.name}</h3>
+                    ${productPrice}
+                `;
+
+                productContainer.appendChild(productDiv);
+            });
+        }
+
+        fetchProducts();
+    </script>
+</body>
+</html>
